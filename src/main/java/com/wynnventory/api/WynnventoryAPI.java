@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.wynntils.core.components.Models;
+import com.wynntils.mc.extension.ItemStackExtension;
+import com.wynntils.models.items.WynnItem;
+import com.wynntils.models.items.WynnItemData;
 import com.wynntils.models.items.items.game.GearItem;
 import com.wynntils.models.trademarket.type.TradeMarketPriceInfo;
 import com.wynnventory.WynnventoryMod;
@@ -28,7 +31,7 @@ public class WynnventoryAPI {
     private static final URI API_BASE_URL = createApiBaseUrl();
     private static final ObjectMapper objectMapper = createObjectMapper();
 
-public void sendTradeMarketResults(ItemStack item) {
+    public void sendTradeMarketResults(ItemStack item) {
         sendTradeMarketResults(List.of(item));
     }
 
@@ -50,9 +53,18 @@ public void sendTradeMarketResults(ItemStack item) {
     }
 
     public TradeMarketItemPriceInfo fetchItemPrices(ItemStack item) {
-        return Models.Item.asWynnItem(item, GearItem.class)
-                .map(gearItem -> fetchItemPrices(gearItem.getName()))
-                .orElse(null);
+        Optional<WynnItem> wynnItemOptional = Models.Item.getWynnItem(item);
+
+        if(wynnItemOptional.isPresent()) {
+            WynnItem wynnItem = wynnItemOptional.get();
+
+            ItemStackExtension extension = wynnItem.getData().get(WynnItemData.ITEMSTACK_KEY);
+            String name = extension.getOriginalName().getStringWithoutFormatting();
+
+            return fetchItemPrices(name);
+        }
+
+        return null;
     }
 
     public TradeMarketItemPriceInfo fetchItemPrices(String itemName) {

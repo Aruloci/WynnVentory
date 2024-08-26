@@ -2,9 +2,14 @@ package com.wynnventory.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.wynntils.core.components.Models;
+import com.wynntils.mc.extension.ItemStackExtension;
 import com.wynntils.models.emeralds.type.EmeraldUnits;
 import com.wynntils.models.gear.type.GearRestrictions;
+import com.wynntils.models.items.WynnItem;
+import com.wynntils.models.items.WynnItemData;
+import com.wynntils.models.items.items.game.EmeraldPouchItem;
 import com.wynntils.models.items.items.game.GearItem;
+import com.wynntils.models.items.items.game.MiscItem;
 import com.wynntils.utils.mc.McUtils;
 import com.wynnventory.WynnventoryMod;
 import com.wynnventory.api.WynnventoryAPI;
@@ -56,25 +61,50 @@ public class TooltipMixin {
         if (hoveredSlot == null || !hoveredSlot.hasItem()) return;
 
         ItemStack item = hoveredSlot.getItem();
-        Optional<GearItem> gearItemOptional = Models.Item.asWynnItem(item, GearItem.class);
-        GearItem gearItem = gearItemOptional.orElse(null);
-        if (gearItem == null) return;
+        Optional<WynnItem> wynnItemOptional = Models.Item.getWynnItem(item);
 
-        if (!fetchedPrices.containsKey(gearItem.getName())) {
-            TradeMarketItemPriceHolder requestedPrice = new TradeMarketItemPriceHolder(FETCHING, gearItem);
-            fetchedPrices.put(gearItem.getName(), requestedPrice);
+        if(wynnItemOptional.isEmpty()) { return; }
+        WynnItem wynnItem = wynnItemOptional.get();
 
-            if (gearItem.getItemInfo().metaInfo().restrictions() == GearRestrictions.UNTRADABLE) {
-                // ignore untradable
-                requestedPrice.setPriceInfo(UNTRADABLE);
-            } else {
-                // fetch price async
-                CompletableFuture.supplyAsync(() -> API.fetchItemPrices(item), executorService)
-                        .thenAccept(requestedPrice::setPriceInfo);
+        // Exclude base WynnItems and the EmeraldPouch from sending sending fetch requests
+        if(wynnItem.getClass() == WynnItem.class || wynnItem.getClass() == EmeraldPouchItem.class) {
+            return;
+        }
+
+        ItemStackExtension extension = wynnItem.getData().get(WynnItemData.ITEMSTACK_KEY);
+        String name = extension.getOriginalName().getStringWithoutFormatting();
+
+        if (!fetchedPrices.containsKey(name)) {
+            TradeMarketItemPriceHolder requestedPrice = new TradeMarketItemPriceHolder(FETCHING, wynnItem);
+            fetchedPrices.put(name, requestedPrice);
+
+            // Check for untradable items
+            if(wynnItem instanceof GearItem) {
+                Optional<GearItem> gearItemOptional = Models.Item.asWynnItem(item, GearItem.class);
+
+                if(gearItemOptional.isPresent()) {
+                    if (gearItemOptional.get().getItemInfo().metaInfo().restrictions() == GearRestrictions.UNTRADABLE) {
+                        requestedPrice.setPriceInfo(UNTRADABLE);
+                    } else {
+                        // fetch price async
+                        CompletableFuture.supplyAsync(() -> API.fetchItemPrices(item), executorService)
+                                .thenAccept(requestedPrice::setPriceInfo);
+                    }
+                }
+            } else if (wynnItem instanceof MiscItem) {
+                Optional<MiscItem> miscItemOptional = Models.Item.asWynnItem(item, MiscItem.class);
+
+                if(miscItemOptional.isPresent() && miscItemOptional.get().isUntradable()) {
+                    requestedPrice.setPriceInfo(UNTRADABLE);
+                } else {
+                    // fetch price async
+                    CompletableFuture.supplyAsync(() -> API.fetchItemPrices(item), executorService)
+                            .thenAccept(requestedPrice::setPriceInfo);
+                }
             }
         }
 
-        TradeMarketItemPriceInfo price = fetchedPrices.get(gearItem.getName()).getPriceInfo();
+        TradeMarketItemPriceInfo price = fetchedPrices.get(name).getPriceInfo();
         List<Component> tooltips = new ArrayList<>();
         if (price == FETCHING) { // Display retrieving info
             tooltips.add(formatText(TITLE_TEXT, ChatFormatting.GOLD));
@@ -88,7 +118,7 @@ public class TooltipMixin {
         renderPriceInfoTooltip(guiGraphics, mouseX, mouseY, item, tooltips);
 
         // remove price if expired
-        if (fetchedPrices.get(gearItem.getName()).isPriceExpired(EXPIRE_MINS)) fetchedPrices.remove(gearItem.getName());
+        if (fetchedPrices.get(name).isPriceExpired(EXPIRE_MINS)) fetchedPrices.remove(name);
     }
 
     @Unique
