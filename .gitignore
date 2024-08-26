@@ -1,17 +1,23 @@
 # gradle
 
-.gradle/
+.gradle
+node_modules
+
+neoforge/.gradle
+neoforge/run
+
+fabric/.gradle
+fabric/run
+
 build/
 out/
 classes/
 
 # eclipse
-
 *.launch
 
 # idea
-
-.idea/
+.idea
 *.iml
 *.ipr
 *.iws
