@@ -28,7 +28,7 @@ dependencies {
     neoForge "net.neoforged:neoforge:${neoforge_version}"
     modRuntimeOnly "me.djtheredstoner:DevAuth-neoforge:${devauth_version}"
 
-    modRuntimeOnly("maven.modrinth:wynntils:v2.0.13-neoforge")
+    modRuntimeOnly("maven.modrinth:dU5Gb9Ab:eWj1Cxgs")
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive = false }

@@ -33,7 +33,7 @@ repositories {
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
 
-    modRuntimeOnly("maven.modrinth:wynntils:v2.0.13-fabric")
+    modRuntimeOnly("maven.modrinth:dU5Gb9Ab:2CerL4vN")
     modCompileOnly("com.terraformersmc:modmenu:${modmenu_version}")
     modRuntimeOnly "me.djtheredstoner:DevAuth-fabric:${devauth_version}"
 
