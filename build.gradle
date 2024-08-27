@@ -60,8 +60,8 @@ subprojects {
             parchment("org.parchmentmc.data:parchment-${parchment_version}@zip")
         }
 
-        implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.17.2'
-        implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: '2.17.2'
+        implementation("com.fasterxml.jackson.core:jackson-databind:2.17.2")
+        implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.17.2")
     }
 }
 

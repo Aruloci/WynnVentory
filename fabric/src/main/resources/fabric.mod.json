@@ -11,7 +11,7 @@
     "homepage": ""
   },
   "license": "All-Rights-Reserved",
-  "icon": "assets/wynnventory/icon.png",
+  "icon": "assets/wynnventory/icon-compressed.png",
   "environment": "*",
   "entrypoints": {
     "client": [
