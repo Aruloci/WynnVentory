@@ -28,10 +28,13 @@ dependencies {
     neoForge "net.neoforged:neoforge:${neoforge_version}"
     modRuntimeOnly "me.djtheredstoner:DevAuth-neoforge:${devauth_version}"
 
-    modRuntimeOnly("maven.modrinth:dU5Gb9Ab:eWj1Cxgs")
-
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive = false }
+
+    include(forgeRuntimeLibrary("com.fasterxml.jackson.core:jackson-core:2.17.2"))
+    include(forgeRuntimeLibrary("com.fasterxml.jackson.core:jackson-annotations:2.17.2"))
+    include(forgeRuntimeLibrary("com.fasterxml.jackson.core:jackson-databind:2.17.2"))
+    include(forgeRuntimeLibrary("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.17.2"))
 
     implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:${mixinextras_version}"))
     implementation(include("io.github.llamalad7:mixinextras-neoforge:${mixinextras_version}"))

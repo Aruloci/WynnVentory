@@ -1,13 +1,10 @@
 package com.wynnventory;
 
-import com.sun.tools.javac.Main;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
+import com.wynntils.models.items.items.game.GearItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.Optional;
 
 public final class Wynnventory {
 	public static final String 	MOD_ID = "wynnventory";
