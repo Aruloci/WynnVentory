@@ -20,12 +20,12 @@ public final class WynnventoryNeoForge {
 
             File modFile = new File(path.toUri());
 
-            final String modId = ModLoadingContext.get().getActiveContainer().getModInfo().getModId();
-            final String modName = ModLoadingContext.get().getActiveContainer().getModInfo().getDisplayName();
+            final String modVersion = ModLoadingContext.get().getActiveContainer().getModInfo().getVersion().toString();
+            final String modName    = ModLoadingContext.get().getActiveContainer().getModInfo().getDisplayName();
 
             Wynnventory.init(
                     Wynnventory.ModLoader.FORGE,
-                    modId,
+                    modVersion,
                     modName,
                     !FMLEnvironment.production,
                     modFile);
