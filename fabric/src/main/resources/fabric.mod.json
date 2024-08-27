@@ -26,7 +26,7 @@
     "fabricloader": ">=${fabric_loader_version}",
     "minecraft": "${minecraft_version_range}",
     "java": ">=21",
-    "wynntils":"*"
+    "wynntils":"${wynntils_version}"
   },
   "suggests": {
   }
