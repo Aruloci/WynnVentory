@@ -1,4 +1,4 @@
-package com.wynnventory.fabric.mixin;
+package com.wynnventory.mixin;
 
 import com.wynnventory.api.WynnventoryAPI;
 import com.wynnventory.util.ModUpdater;

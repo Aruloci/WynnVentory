@@ -1,4 +1,4 @@
-package com.wynnventory.fabric.mixin;
+package com.wynnventory.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.wynntils.core.components.Models;

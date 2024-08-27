@@ -1,4 +1,4 @@
-package com.wynnventory.neoforge.mixin;
+package com.wynnventory.mixin;
 
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.inventory.Slot;

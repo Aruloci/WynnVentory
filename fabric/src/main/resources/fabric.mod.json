@@ -19,16 +19,15 @@
     ]
   },
   "mixins": [
-    "wynnventory.mixins.json"
+    "wynnventory.mixins.json",
+    "wynnventory.mixins.fabric.json"
   ],
   "depends": {
-    "fabricloader": ">=0.16.3",
-    "minecraft": "~1.21",
+    "fabricloader": ">=${fabric_loader_version}",
+    "minecraft": "${minecraft_version_range}",
     "java": ">=21",
-    "architectury": ">=13.0.6",
-    "fabric-api": "*"
+    "wynntils":"*"
   },
   "suggests": {
-    "another-mod": "*"
   }
 }

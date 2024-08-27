@@ -1,0 +1,11 @@
+{
+  "client": [],
+  "compatibilityLevel": "JAVA_21",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8.5",
+  "mixins": [],
+  "package": "com.wynnventory.fabric.mixin",
+  "required": true
+}

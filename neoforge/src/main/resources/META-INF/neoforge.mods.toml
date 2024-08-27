@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[2,)"
+loaderVersion = "${loader_version_range}"
 #issueTrackerURL = ""
 license = "All Rights Reserved"
 
@@ -8,31 +8,26 @@ modId = "wynnventory"
 version = "${version}"
 displayName = "Wynnventory"
 authors = ""
-description = '''
-
-'''
-#logoFile = ""
+description = ""
+logoFile = "assets/icon-compressed.png"
 
 [[dependencies.wynnventory]]
 modId = "neoforge"
 type = "required"
-versionRange = "[21,)"
-ordering = "NONE"
-side = "BOTH"
+versionRange = "${neoforge_version_range}"
 
 [[dependencies.wynnventory]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21,)"
-ordering = "NONE"
-side = "BOTH"
+versionRange = "${minecraft_version}"
 
 [[dependencies.wynnventory]]
-modId = "architectury"
+modId = "wynntils"
 type = "required"
-versionRange = "[13.0.6,)"
-ordering = "AFTER"
-side = "BOTH"
+versionRange = "^${wynntils_version}"
 
 [[mixins]]
 config = "wynnventory.mixins.json"
+
+[[mixins]]
+config = "wynnventory.mixins.neoforge.json"

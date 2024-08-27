@@ -1,8 +1,5 @@
 {
   "client": [
-    "AbstractContainerScreenAccessor",
-    "ClientPacketListenerMixin",
-    "TooltipMixin"
   ],
   "compatibilityLevel": "JAVA_21",
   "injectors": {
@@ -10,6 +7,6 @@
   },
   "minVersion": "0.8.5",
   "mixins": [],
-  "package": "com.wynnventory.fabric.mixin",
+  "package": "com.wynnventory.neoforge.mixin",
   "required": true
 }

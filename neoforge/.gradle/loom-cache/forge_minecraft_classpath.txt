@@ -1,6 +1,6 @@
 C:\Users\timki\.gradle\caches\fabric-loom\1.21\neoforge\21.0.167\client-extra.jar
 C:\Users\timki\.gradle\caches\modules-2\files-2.1\net.neoforged.fancymodloader\earlydisplay\4.0.23\c9491ed7df998cf229eae9c7364ee9ab6f26bcfe\earlydisplay-4.0.23.jar
-C:\Users\timki\.gradle\caches\fabric-loom\forge\transformed-dependencies-v1\net\neoforged\fancymodloader\eb44fff51c5702a9ff3399a9ffe8df325b840112f2faef438f8dea72a72e0864\loader\4.0.23\loader-4.0.23.jar
+C:\Users\timki\.gradle\caches\fabric-loom\forge\transformed-dependencies-v1\net\neoforged\fancymodloader\002cb9a4a23d6cee8e48f7a4b77a0d7b12c116f86de934b88161085f858ec72d\loader\4.0.23\loader-4.0.23.jar
 C:\Users\timki\.gradle\caches\modules-2\files-2.1\net.neoforged\coremods\7.0.3\9147e6f638b4272b3bd5fc8f92ad37802512c6c\coremods-7.0.3.jar
 C:\Users\timki\.gradle\caches\modules-2\files-2.1\cpw.mods\modlauncher\11.0.4\6619d4812a3c092310d521ebc4c9503727563df7\modlauncher-11.0.4.jar
 C:\Users\timki\.gradle\caches\modules-2\files-2.1\cpw.mods\bootstraplauncher\2.0.2\1a2d076cbc33b0520cbacd591224427b2a20047d\bootstraplauncher-2.0.2.jar
@@ -22,14 +22,13 @@ C:\Users\timki\.gradle\caches\modules-2\files-2.1\net.neoforged\JarJarMetadata\0
 C:\Users\timki\.gradle\caches\modules-2\files-2.1\org.apache.maven\maven-artifact\3.8.5\4433f50c07debefaed0553bd0068f4f48d449313\maven-artifact-3.8.5.jar
 C:\Users\timki\.gradle\caches\modules-2\files-2.1\net.jodah\typetools\0.6.3\a01aaa6ddaea9ec07ec4f209487b7a46a526283a\typetools-0.6.3.jar
 C:\Users\timki\.gradle\caches\modules-2\files-2.1\net.minecrell\terminalconsoleappender\1.3.0\b562e9bb61235c9520e26282cdee71f8f802d1fc\terminalconsoleappender-1.3.0.jar
-C:\Users\timki\.gradle\caches\modules-2\files-2.1\org.jline\jline-reader\3.20.0\8f15415b022a25b473e8e16c28ae913186ffb9c4\jline-reader-3.20.0.jar
-C:\Users\timki\.gradle\caches\modules-2\files-2.1\org.jline\jline-terminal\3.20.0\d0ddcc708ddf527a3454c941b7b9225cc83a15ff\jline-terminal-3.20.0.jar
-C:\Users\timki\.gradle\caches\modules-2\files-2.1\org.apache.logging.log4j\log4j-core\2.22.1\7183a25510a02ad00cc6a95d3b3d2a7d3c5a8dc4\log4j-core-2.22.1.jar
-C:\Users\timki\.gradle\caches\modules-2\files-2.1\org.apache.logging.log4j\log4j-api\2.22.1\bea6fede6328fabafd7e68363161a7ea6605abd1\log4j-api-2.22.1.jar
 C:\Users\timki\.gradle\caches\modules-2\files-2.1\net.fabricmc\sponge-mixin\0.14.0+mixin.0.8.6\c265173c84346e9e5d42a2384b2b02bd39a4a899\sponge-mixin-0.14.0+mixin.0.8.6.jar
 C:\Users\timki\.gradle\caches\modules-2\files-2.1\org.apache.commons\commons-lang3\3.14.0\1ed471194b02f2c6cb734a0cd6f6f107c673afae\commons-lang3-3.14.0.jar
 C:\Users\timki\.gradle\caches\modules-2\files-2.1\com.mojang\logging\1.2.7\24cb95ffb0e3433fd6e844c04e68009e504ca1c0\logging-1.2.7.jar
 C:\Users\timki\.gradle\caches\modules-2\files-2.1\org.apache.logging.log4j\log4j-slf4j2-impl\2.22.1\d7e6693c2606cb7e7335047d7bb96dec52db5665\log4j-slf4j2-impl-2.22.1.jar
+C:\Users\timki\.gradle\caches\modules-2\files-2.1\org.apache.logging.log4j\log4j-core\2.22.1\7183a25510a02ad00cc6a95d3b3d2a7d3c5a8dc4\log4j-core-2.22.1.jar
+C:\Users\timki\.gradle\caches\modules-2\files-2.1\io.github.juuxel\unprotect\1.2.0\49cc229a0469f28fae41593a9537743ac6a951dc\unprotect-1.2.0.jar
+C:\Users\timki\.gradle\caches\modules-2\files-2.1\org.apache.logging.log4j\log4j-api\2.22.1\bea6fede6328fabafd7e68363161a7ea6605abd1\log4j-api-2.22.1.jar
 C:\Users\timki\.gradle\caches\modules-2\files-2.1\net.neoforged\neoform\1.21-20240613.152323\6293c1a6b9b053ea4e41ac2fe03a3342486d45b1\neoform-1.21-20240613.152323.zip
 C:\Users\timki\.gradle\caches\modules-2\files-2.1\net.neoforged\JarJarFileSystems\0.4.1\78f59f89defcd032ed788b151ca6a0d40ace796a\JarJarFileSystems-0.4.1.jar
 C:\Users\timki\.gradle\caches\modules-2\files-2.1\io.github.llamalad7\mixinextras-neoforge\0.3.5\ef3ffcf309dae656517b2f120189b1c9b21737dd\mixinextras-neoforge-0.3.5.jar
@@ -46,6 +45,8 @@ C:\Users\timki\.gradle\caches\modules-2\files-2.1\commons-io\commons-io\2.15.1\f
 C:\Users\timki\.gradle\caches\modules-2\files-2.1\net.sf.jopt-simple\jopt-simple\5.0.4\4fdac2fbe92dfad86aa6e9301736f6b4342a3f5c\jopt-simple-5.0.4.jar
 C:\Users\timki\.gradle\caches\modules-2\files-2.1\net.minecraftforge\srgutils\0.4.15\ca408b131759478f164e010fae0d73997e125fb5\srgutils-0.4.15.jar
 C:\Users\timki\.gradle\caches\modules-2\files-2.1\org.antlr\antlr4-runtime\4.13.1\17125bae1d965624e265ef49552f6465a2bfa307\antlr4-runtime-4.13.1.jar
+C:\Users\timki\.gradle\caches\modules-2\files-2.1\org.jline\jline-reader\3.20.0\8f15415b022a25b473e8e16c28ae913186ffb9c4\jline-reader-3.20.0.jar
+C:\Users\timki\.gradle\caches\modules-2\files-2.1\org.jline\jline-terminal\3.20.0\d0ddcc708ddf527a3454c941b7b9225cc83a15ff\jline-terminal-3.20.0.jar
 C:\Users\timki\.gradle\caches\modules-2\files-2.1\org.codehaus.plexus\plexus-utils\3.3.0\cf43b5391de623b36fe066a21127baef82c64022\plexus-utils-3.3.0.jar
 C:\Users\timki\.gradle\caches\modules-2\files-2.1\com.machinezoo.noexception\noexception\1.7.1\b65330c98e38a1f915fa54a6e5eca496505e3f0a\noexception-1.7.1.jar
 C:\Users\timki\.gradle\caches\modules-2\files-2.1\com.github.oshi\oshi-core\6.4.10\b1d8ab82d11d92fd639b56d639f8f46f739dd5fa\oshi-core-6.4.10.jar
@@ -109,6 +110,5 @@ C:\Users\timki\.gradle\caches\modules-2\files-2.1\org.lwjgl\lwjgl\3.3.3\9e670718
 C:\Users\timki\.gradle\caches\modules-2\files-2.1\org.lz4\lz4-java\1.8.0\4b986a99445e49ea5fbf5d149c4b63f6ed6c6780\lz4-java-1.8.0.jar
 C:\Users\timki\.gradle\caches\modules-2\files-2.1\io.netty\netty-transport-native-epoll\4.1.97.Final\54188f271e388e7f313aea995e82f58ce2cdb809\netty-transport-native-epoll-4.1.97.Final-linux-x86_64.jar
 C:\Users\timki\.gradle\caches\modules-2\files-2.1\io.netty\netty-transport-native-epoll\4.1.97.Final\5514744c588190ffda076b35a9b8c9f24946a960\netty-transport-native-epoll-4.1.97.Final-linux-aarch_64.jar
-C:\Users\timki\.gradle\caches\modules-2\files-2.1\io.github.juuxel\unprotect\1.2.0\49cc229a0469f28fae41593a9537743ac6a951dc\unprotect-1.2.0.jar
-C:\Users\timki\.gradle\caches\fabric-loom\minecraftMaven\net\minecraft\neoforge-21.0.167-minecraft-merged\1.21-loom.mappings.1_21.layered+hash.652177077-v2-neoforge-21.0.167\neoforge-21.0.167-minecraft-merged-1.21-loom.mappings.1_21.layered+hash.652177077-v2-neoforge-21.0.167.jar
+D:\GitHub\Wynnventory\.gradle\loom-cache\minecraftMaven\net\minecraft\neoforge-21.0.167-minecraft-merged-6f46f264a7\1.21-loom.mappings.1_21.layered+hash.652182843-v2-neoforge-21.0.167\neoforge-21.0.167-minecraft-merged-6f46f264a7-1.21-loom.mappings.1_21.layered+hash.652182843-v2-neoforge-21.0.167.jar
 C:\Users\timki\.gradle\caches\modules-2\files-2.1\net.fabricmc\dev-launch-injector\0.2.1+build.8\da8bef7e6e2f952da707f282bdb46882a0fce5e3\dev-launch-injector-0.2.1+build.8.jar
