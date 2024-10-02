@@ -36,6 +36,8 @@ public class LootpoolItem {
             GearBoxItem.class
     );
 
+    public LootpoolItem() { }
+
     public LootpoolItem(String itemType, int amount, String name, String rarity, boolean shiny, String type) {
         this.itemType = itemType;
         this.amount = amount;
@@ -197,12 +199,12 @@ public class LootpoolItem {
         this.rarity = rarity;
     }
 
-    public boolean getShiny() {
-        return shiny;
-    }
-
     public void setShiny(boolean shiny) {
         this.shiny = shiny;
+    }
+
+    public boolean isShiny() {
+        return shiny;
     }
 
     public String getType() {

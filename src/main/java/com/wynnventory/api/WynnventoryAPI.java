@@ -18,6 +18,7 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 public class WynnventoryAPI {
@@ -106,6 +107,34 @@ public class WynnventoryAPI {
         }
     }
 
+    public List<Lootpool> getLootpools(String type) {
+        try {
+            URI endpointURI;
+            if (WynnventoryMod.isDev()) {
+                WynnventoryMod.info("Fetching " + type + " lootpools from DEV endpoint.");
+                endpointURI = getEndpointURI("https://wynn-ventory-dev-2a243523ab77.herokuapp.com/api/lootpool/" + type + "/");
+            } else {
+                endpointURI = getEndpointURI("api/lootpool/" + type + "/");
+            }
+
+            WynnventoryMod.error("URL: " + endpointURI);
+
+            HttpResponse<String> response = HttpUtil.sendHttpGetRequest(endpointURI);
+
+            if (response.statusCode() == 200) {
+                return parseLootpoolResponse(response.body());
+            } else if (response.statusCode() == 404) {
+                return null;
+            } else {
+                WynnventoryMod.error("Failed to fetch " + type + " lootpools: " + response.body());
+                return null;
+            }
+        } catch (Exception e) {
+            WynnventoryMod.error("Failed to initiate lootpool fetch {}", e);
+            return null;
+        }
+    }
+
     private String serializeData(Object data) {
         try {
             return objectMapper.writeValueAsString(data);
@@ -124,6 +153,17 @@ public class WynnventoryAPI {
             return null;
         }
     }
+
+    private List<Lootpool> parseLootpoolResponse(String responseBody) {
+        try {
+            List<Lootpool> lootpools = objectMapper.readValue(responseBody, new com.fasterxml.jackson.core.type.TypeReference<>() {});
+            return lootpools.isEmpty() ? new ArrayList<>() : lootpools;
+        } catch (JsonProcessingException e) {
+            WynnventoryMod.error("Failed to parse item price response {}", e);
+            return null;
+        }
+    }
+
 
     private static URI createApiBaseUrl() {
         try {
