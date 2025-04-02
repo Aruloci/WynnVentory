@@ -3,10 +3,14 @@ package com.wynnventory.mixin;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.wynntils.core.components.Models;
+import com.wynntils.core.text.StyledText;
+import com.wynntils.handlers.item.ItemAnnotation;
+import com.wynntils.mc.extension.ItemStackExtension;
 import com.wynntils.models.emeralds.type.EmeraldUnits;
 import com.wynntils.models.gear.type.GearInfo;
 import com.wynntils.models.gear.type.GearRestrictions;
 import com.wynntils.models.items.WynnItem;
+import com.wynntils.models.items.annotators.game.GearAnnotator;
 import com.wynntils.models.items.items.game.GearBoxItem;
 import com.wynntils.models.items.items.game.GearItem;
 import com.wynntils.utils.mc.McUtils;
@@ -18,6 +22,7 @@ import com.wynnventory.model.item.TradeMarketItem;
 import com.wynnventory.model.item.TradeMarketItemPriceHolder;
 import com.wynnventory.model.item.TradeMarketItemPriceInfo;
 import com.wynnventory.util.EmeraldPrice;
+import com.wynnventory.util.ItemStackUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -59,7 +64,7 @@ public abstract class TooltipMixin {
 
     private static final TradeMarketItemPriceInfo FETCHING = new TradeMarketItemPriceInfo();
     private static final TradeMarketItemPriceInfo UNTRADABLE = new TradeMarketItemPriceInfo();
-    private static HashMap<String, TradeMarketItemPriceHolder> fetchedPrices = new HashMap<>();
+    private static HashMap<Boolean, HashMap<String, TradeMarketItemPriceHolder>> fetchedPrices = new HashMap<>();
     private static HashMap<String, TradeMarketItemPriceHolder> fetchedHistoricPrices = new HashMap<>();
 
     private static final ExecutorService executorService = Executors.newCachedThreadPool();
@@ -91,24 +96,31 @@ public abstract class TooltipMixin {
 
             List<Component> tooltips = new ArrayList<>();
             if(wynnItem instanceof GearItem gearItem) {
+                StyledText originalName = ItemStackUtils.getOriginalName(item);
+                GearItem annotatedItem = (GearItem) new GearAnnotator().getAnnotation(item, originalName);
+
                 tooltips.add(Component.literal(TITLE_TEXT).withStyle(ChatFormatting.GOLD));
+                boolean isShiny = gearItem.getShinyStat().isPresent();
 
-                fetchPricesForGear(gearItem.getItemInfo());
+                fetchPricesForGear(gearItem.getItemInfo(), isShiny);
 
-                tooltips.addAll(getTooltipsForGear(gearItem.getItemInfo()));
+                tooltips.addAll(getTooltipsForGear(gearItem.getItemInfo(), isShiny));
+
+                TradeMarketItemPriceHolder fetchedPrice = fetchedPrices.get(isShiny).get(gearItem.getName());
+                TradeMarketItemPriceHolder fetchedHistoricPrice = fetchedHistoricPrices.get(gearItem.getName());
 
                 // remove price if expired
-                if (fetchedPrices.get(gearItem.getName()).isPriceExpired(EXPIRE_MINS)) fetchedPrices.remove(gearItem.getName());
-                if (fetchedHistoricPrices.get(gearItem.getName()).isPriceExpired(EXPIRE_MINS)) fetchedHistoricPrices.remove(gearItem.getName());
+                if (fetchedPrice != null && fetchedPrice.isPriceExpired(EXPIRE_MINS)) fetchedPrices.get(isShiny).remove(gearItem.getName());
+                if (fetchedHistoricPrice != null && fetchedHistoricPrice.isPriceExpired(EXPIRE_MINS)) fetchedHistoricPrices.remove(gearItem.getName());
             } else if(wynnItem instanceof GearBoxItem gearBoxItem && config.isShowBoxedItemTooltips()) {
                 tooltips.add(Component.literal(TITLE_TEXT).withStyle(ChatFormatting.GOLD));
 
                 List<GearInfo> possibleGear = Models.Gear.getPossibleGears(gearBoxItem);
                 List<TradeMarketItemPriceHolder> possiblePrices = new ArrayList<>();
                 for(GearInfo gear : possibleGear) {
-                    fetchPricesForGear(gear);
+                    fetchPricesForGear(gear, false);
 
-                    possiblePrices.add(fetchedPrices.get(gear.name()));
+                    possiblePrices.add(fetchedPrices.get(false).get(gear.name()));
                 }
 
                 possiblePrices.sort((o1, o2) -> {
@@ -144,12 +156,15 @@ public abstract class TooltipMixin {
                 GearInfo gearInfo;
                 for(TradeMarketItemPriceHolder priceHolder : possiblePrices) {
                     gearInfo = priceHolder.getInfo();
-                    tooltips.addAll(getTooltipsForGear(gearInfo));
+                    tooltips.addAll(getTooltipsForGear(gearInfo, false));
                     tooltips.add(Component.literal(""));
 
+                    TradeMarketItemPriceHolder fetchedPrice = fetchedPrices.get(false).get(gearInfo.name());
+                    TradeMarketItemPriceHolder fetchedHistoricPrice = fetchedHistoricPrices.get(gearInfo.name());
+
                     // remove price if expired
-                    if (fetchedPrices.get(gearInfo.name()).isPriceExpired(EXPIRE_MINS)) fetchedPrices.remove(gearInfo.name());
-                    if (fetchedHistoricPrices.get(gearInfo.name()).isPriceExpired(EXPIRE_MINS)) fetchedHistoricPrices.remove(gearInfo.name());
+                    if (fetchedPrice != null && fetchedPrice.isPriceExpired(EXPIRE_MINS)) fetchedPrices.get(false).remove(gearInfo.name());
+                    if (fetchedHistoricPrice != null && fetchedHistoricPrice.isPriceExpired(EXPIRE_MINS)) fetchedHistoricPrices.remove(gearInfo.name());
                 }
             }
 
@@ -162,7 +177,7 @@ public abstract class TooltipMixin {
 
         TradeMarketItem marketItem = TradeMarketItem.createTradeMarketItem(item);
 
-        if(marketItem != null) {
+        if(marketItem != null && !accessor.getQueuedMarketItems().contains(marketItem)) {
             accessor.getQueuedMarketItems().add(marketItem);
             WynnventoryMod.info("Submitted item: " + marketItem.getItem().getName());
         }
@@ -265,23 +280,24 @@ public abstract class TooltipMixin {
     }
 
     @Unique
-    private List<Component> createPriceTooltip(GearInfo info, TradeMarketItemPriceInfo priceInfo) {
-        final ConfigManager config = ConfigManager.getInstance();
+    private List<Component> createPriceTooltip(GearInfo info, TradeMarketItemPriceInfo priceInfo, boolean isShiny) {
         final List<Component> tooltipLines = new ArrayList<>();
 
-        tooltipLines.add(formatText(info.name(), info.tier().getChatFormatting()));
+        MutableComponent shinyPrefix = isShiny ? Component.literal("⬡ ").withStyle(ChatFormatting.WHITE).append(Component.literal("Shiny ").withStyle(info.tier().getChatFormatting())) : Component.empty();
+
+        tooltipLines.add(shinyPrefix.append(formatText(info.name(), info.tier().getChatFormatting())));
 
         if (priceInfo == null) {
             tooltipLines.add(formatText("No price data available yet!", ChatFormatting.RED));
         } else {
-            TradeMarketItemPriceInfo latestHistoricPrice = fetchedHistoricPrices.get(info.name()).getPriceInfo();
+            TradeMarketItemPriceHolder latestHistoricPrice = fetchedHistoricPrices.get(info.name());
 
-            boolean showFluctuation = config.isShowPriceFluctuation() && latestHistoricPrice != null;
+            boolean showFluctuation = config.isShowPriceFluctuation() && latestHistoricPrice != null && !isShiny;
 
             float fluctuation;
             if (config.isShowMaxPrice() && priceInfo.getHighestPrice() > 0) {
                 if(showFluctuation) {
-                    fluctuation = calcPriceDiff(priceInfo.getHighestPrice(), latestHistoricPrice.getHighestPrice());
+                    fluctuation = calcPriceDiff(priceInfo.getHighestPrice(), latestHistoricPrice.getPriceInfo().getHighestPrice());
                     tooltipLines.add(formatPriceWithFluctuation("Max: ", priceInfo.getHighestPrice(), fluctuation));
                 } else {
                     tooltipLines.add(formatPrice("Max: ", priceInfo.getHighestPrice()));
@@ -290,7 +306,7 @@ public abstract class TooltipMixin {
 
             if (config.isShowMinPrice() && priceInfo.getLowestPrice() > 0) {
                 if(showFluctuation) {
-                    fluctuation = calcPriceDiff(priceInfo.getLowestPrice(), latestHistoricPrice.getLowestPrice());
+                    fluctuation = calcPriceDiff(priceInfo.getLowestPrice(), latestHistoricPrice.getPriceInfo().getLowestPrice());
                     tooltipLines.add(formatPriceWithFluctuation("Min: ", priceInfo.getLowestPrice(), fluctuation));
                 } else {
                     tooltipLines.add(formatPrice("Min: ", priceInfo.getLowestPrice()));
@@ -299,7 +315,7 @@ public abstract class TooltipMixin {
 
             if (config.isShowAveragePrice() && priceInfo.getAveragePrice() > 0) {
                 if(showFluctuation) {
-                    fluctuation = calcPriceDiff(priceInfo.getAveragePrice(), latestHistoricPrice.getAveragePrice());
+                    fluctuation = calcPriceDiff(priceInfo.getAveragePrice(), latestHistoricPrice.getPriceInfo().getAveragePrice());
                     tooltipLines.add(formatPriceWithFluctuation("Avg: ", priceInfo.getAveragePrice(), fluctuation));
                 } else {
                     tooltipLines.add(formatPrice("Avg: ", priceInfo.getAveragePrice()));
@@ -308,7 +324,7 @@ public abstract class TooltipMixin {
 
             if (config.isShowAverage80Price() && priceInfo.getAverage80Price() > 0) {
                 if(showFluctuation) {
-                    fluctuation = calcPriceDiff(priceInfo.getAverage80Price(), latestHistoricPrice.getAverage80Price());
+                    fluctuation = calcPriceDiff(priceInfo.getAverage80Price(), latestHistoricPrice.getPriceInfo().getAverage80Price());
                     tooltipLines.add(formatPriceWithFluctuation("Avg 80%: ", priceInfo.getAverage80Price(), fluctuation));
                 } else  {
                     tooltipLines.add(formatPrice("Avg 80%: ", priceInfo.getAverage80Price()));
@@ -317,7 +333,7 @@ public abstract class TooltipMixin {
 
             if (config.isShowUnidAveragePrice() && priceInfo.getUnidentifiedAveragePrice() > 0) {
                 if(showFluctuation) {
-                    fluctuation = calcPriceDiff(priceInfo.getUnidentifiedAveragePrice(), latestHistoricPrice.getUnidentifiedAveragePrice());
+                    fluctuation = calcPriceDiff(priceInfo.getUnidentifiedAveragePrice(), latestHistoricPrice.getPriceInfo().getUnidentifiedAveragePrice());
                     tooltipLines.add(formatPriceWithFluctuation("Unidentified Avg: ", priceInfo.getUnidentifiedAveragePrice(), fluctuation));
                 } else {
                     tooltipLines.add(formatPrice("Unidentified Avg: ", priceInfo.getUnidentifiedAveragePrice()));
@@ -326,7 +342,7 @@ public abstract class TooltipMixin {
 
             if (config.isShowUnidAverage80Price() && priceInfo.getUnidentifiedAverage80Price() > 0) {
                 if(showFluctuation) {
-                    fluctuation = calcPriceDiff(priceInfo.getUnidentifiedAverage80Price(), latestHistoricPrice.getUnidentifiedAverage80Price());
+                    fluctuation = calcPriceDiff(priceInfo.getUnidentifiedAverage80Price(), latestHistoricPrice.getPriceInfo().getUnidentifiedAverage80Price());
                     tooltipLines.add(formatPriceWithFluctuation("Unidentified Avg 80%: ", priceInfo.getUnidentifiedAverage80Price(), fluctuation));
                 } else {
                     tooltipLines.add(formatPrice("Unidentified Avg 80%: ", priceInfo.getUnidentifiedAverage80Price()));
@@ -337,22 +353,26 @@ public abstract class TooltipMixin {
         return tooltipLines;
     }
 
-    private void fetchPricesForGear(GearInfo info) {
-        if (!fetchedPrices.containsKey(info.name())) {
-            TradeMarketItemPriceHolder requestedPrice = new TradeMarketItemPriceHolder(FETCHING, info);
-            fetchedPrices.put(info.name(), requestedPrice);
+    private void fetchPricesForGear(GearInfo info, boolean isShiny) {
+        if(!fetchedPrices.containsKey(isShiny)) {
+            fetchedPrices.put(isShiny, new HashMap<>());
+        }
+
+        if (!fetchedPrices.get(isShiny).containsKey(info.name())) {
+            TradeMarketItemPriceHolder requestedPrice = new TradeMarketItemPriceHolder(FETCHING, info, isShiny);
+
+            fetchedPrices.get(isShiny).put(info.name(), requestedPrice);
 
             if (info.metaInfo().restrictions() == GearRestrictions.UNTRADABLE) {
                 requestedPrice.setPriceInfo(UNTRADABLE);
             } else {
-                // fetch price async
-                CompletableFuture.supplyAsync(() -> API.fetchItemPrices(info.name()), executorService)
+                CompletableFuture.supplyAsync(() -> API.fetchItemPrices(info.name(), isShiny), executorService)
                         .thenAccept(requestedPrice::setPriceInfo);
             }
         }
 
-        if (!fetchedHistoricPrices.containsKey(info.name())) {
-            TradeMarketItemPriceHolder requestedHistoricPrice = new TradeMarketItemPriceHolder(FETCHING, info);
+        if (!fetchedHistoricPrices.containsKey(info.name()) && !isShiny) {
+            TradeMarketItemPriceHolder requestedHistoricPrice = new TradeMarketItemPriceHolder(FETCHING, info, isShiny);
             fetchedHistoricPrices.put(info.name(), requestedHistoricPrice);
 
             if (info.metaInfo().restrictions() == GearRestrictions.UNTRADABLE) {
@@ -364,8 +384,8 @@ public abstract class TooltipMixin {
         }
     }
 
-    private List<Component> getTooltipsForGear(GearInfo info) {
-        TradeMarketItemPriceInfo price = fetchedPrices.get(info.name()).getPriceInfo();
+    private List<Component> getTooltipsForGear(GearInfo info, boolean isShiny) {
+        TradeMarketItemPriceInfo price = fetchedPrices.get(isShiny).get(info.name()).getPriceInfo();
 
         List<Component> tooltips = new ArrayList<>();
         if (price == FETCHING) { // Display retrieving info
@@ -373,7 +393,7 @@ public abstract class TooltipMixin {
         } else if (price == UNTRADABLE) { // Display untradable
             tooltips.add(formatText("Item is untradable.", ChatFormatting.RED));
         } else { // Display fetched price
-            tooltips = createPriceTooltip(info, price);
+            tooltips = createPriceTooltip(info, price, isShiny);
         }
 
         return tooltips;

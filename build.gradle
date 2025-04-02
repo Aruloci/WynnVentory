@@ -21,6 +21,14 @@ repositories {
 	maven { url = "https://maven.shedaniel.me/" }
 }
 
+configurations {
+	resolvableImplementation {
+		canBeResolved = true
+		canBeConsumed = false
+		extendsFrom implementation
+	}
+}
+
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings loom.layered {
@@ -28,7 +36,7 @@ dependencies {
 		parchment("org.parchmentmc.data:parchment-${parchment_version}@zip")
 	}
 
-	modImplementation files("libs/wynntils-3.0.10-fabric+MC-1.21.4.jar")
+	modImplementation ("maven.modrinth:wynntils:v3.0.12")
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
@@ -41,14 +49,6 @@ dependencies {
 	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.17.2'
 	implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: '2.17.2'
 	implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.17.2'
-}
-
-configurations {
-	resolvableImplementation {
-		canBeResolved = true
-		canBeConsumed = false
-		extendsFrom implementation
-	}
 }
 
 processResources {

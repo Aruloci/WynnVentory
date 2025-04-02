@@ -9,11 +9,13 @@ public class TradeMarketItemPriceHolder {
     private TradeMarketItemPriceInfo priceInfo;
     private final GearInfo info;
     private final Instant timestamp;
+    private final boolean isShiny;
 
-    public TradeMarketItemPriceHolder(TradeMarketItemPriceInfo priceInfo, GearInfo info) {
+    public TradeMarketItemPriceHolder(TradeMarketItemPriceInfo priceInfo, GearInfo info, boolean isShiny) {
         this.priceInfo = priceInfo;
         this.info = info;
         this.timestamp = Instant.now();
+        this.isShiny = isShiny;
     }
 
     public void setPriceInfo(TradeMarketItemPriceInfo priceInfo) {
@@ -30,6 +32,10 @@ public class TradeMarketItemPriceHolder {
 
     public Instant getTimestamp() {
         return timestamp;
+    }
+
+    public boolean isShiny() {
+        return isShiny;
     }
 
     public boolean isPriceExpired(long minutes) {

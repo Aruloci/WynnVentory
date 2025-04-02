@@ -74,21 +74,20 @@ public class WynnventoryAPI {
 
     public TradeMarketItemPriceInfo fetchItemPrices(ItemStack item) {
         return Models.Item.asWynnItem(item, GearItem.class)
-                .map(gearItem -> fetchItemPrices(gearItem.getName()))
+                .map(gearItem -> fetchItemPrices(gearItem.getName(), gearItem.getShinyStat().isPresent()))
                 .orElse(null);
     }
 
-    public TradeMarketItemPriceInfo fetchItemPrices(String itemName) {
-        String playerName = McUtils.playerName();
+    public TradeMarketItemPriceInfo fetchItemPrices(String itemName, boolean isShiny) {
         try {
             final String encodedItemName = URLEncoder.encode(itemName, StandardCharsets.UTF_8).replace("+", "%20");
 
             URI endpointURI;
             if (WynnventoryMod.isDev()) {
                 WynnventoryMod.info("Fetching market data from DEV endpoint.");
-                endpointURI = getEndpointURI("https://wynn-ventory-dev-2a243523ab77.herokuapp.com/api/trademarket/item/" + encodedItemName + "/price?env=dev2&playername=" + playerName);
+                endpointURI = getEndpointURI("https://wynn-ventory-dev-2a243523ab77.herokuapp.com/api/trademarket/item/" + encodedItemName + "/price?env=dev2&shiny=" + isShiny);
             } else {
-                endpointURI = getEndpointURI("trademarket/item/" + encodedItemName + "/price?playername=" + playerName);
+                endpointURI = getEndpointURI("trademarket/item/" + encodedItemName + "/price?shiny=" + isShiny);
             }
 
             HttpResponse<String> response = HttpUtil.sendHttpGetRequest(endpointURI);

@@ -1,8 +1,14 @@
 package com.wynnventory.util;
 
+import com.wynntils.core.WynntilsMod;
+import com.wynntils.core.mod.type.CrashType;
 import com.wynntils.core.text.StyledText;
+import com.wynntils.handlers.item.ItemAnnotation;
+import com.wynntils.handlers.item.ItemAnnotator;
+import com.wynntils.mc.extension.ItemStackExtension;
 import com.wynntils.models.items.WynnItem;
 import com.wynntils.models.items.WynnItemData;
+import com.wynntils.utils.mc.McUtils;
 import com.wynnventory.WynnventoryMod;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.world.item.ItemStack;
@@ -33,6 +39,10 @@ public class ItemStackUtils {
             WynnventoryMod.error("Error trying to get wynntilsOriginalName.", e);
             return null;
         }
+    }
+
+    public static StyledText getOriginalName(ItemStack itemStack) {
+        return StyledText.fromComponent(itemStack.getHoverName()).getNormalized();
     }
 
     public static WynnItem getWynnItem(ItemStack itemStack) {
