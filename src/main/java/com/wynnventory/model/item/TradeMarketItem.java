@@ -8,6 +8,7 @@ import com.wynnventory.WynnventoryMod;
 import com.wynnventory.util.TradeMarketPriceParser;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class TradeMarketItem {
@@ -54,4 +55,24 @@ public class TradeMarketItem {
     public String getPlayerName() { return playerName; }
 
     public String getModVersion() { return modVersion; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o instanceof TradeMarketItem other) {
+            return listingPrice == other.listingPrice &&
+                    amount == other.amount &&
+                    Objects.equals(item, other.item) &&
+                    Objects.equals(playerName, other.playerName) &&
+                    Objects.equals(modVersion, other.modVersion);
+        }
+
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(item, listingPrice, amount, playerName, modVersion);
+    }
+
 }

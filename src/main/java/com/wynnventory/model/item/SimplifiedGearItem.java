@@ -9,6 +9,7 @@ import com.wynnventory.model.stat.ActualStatWithPercentage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class SimplifiedGearItem {
@@ -76,5 +77,32 @@ public class SimplifiedGearItem {
     public List<ActualStatWithPercentage> getActualStatsWithPercentage() {
         return actualStatsWithPercentage;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o instanceof SimplifiedGearItem other) {
+            return level == other.level &&
+                    powderSlots == other.powderSlots &&
+                    rerollCount == other.rerollCount &&
+                    Float.compare(other.overallPercentage, overallPercentage) == 0 &&
+                    unidentified == other.unidentified &&
+                    Objects.equals(name, other.name) &&
+                    Objects.equals(rarity, other.rarity) &&
+                    Objects.equals(shinyStat, other.shinyStat) &&
+                    Objects.equals(actualStatsWithPercentage, other.actualStatsWithPercentage);
+        }
+
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, level, rarity, powderSlots, rerollCount,
+                overallPercentage, unidentified, shinyStat,
+                actualStatsWithPercentage);
+    }
+
 }
 
